@@ -220,35 +220,7 @@ Imagine a server handling incoming web requests:
 This continuous cycle allows Node.js to handle many operations concurrently without blocking the main thread.
 
 ***Diagram of Node.js Event-Driven Architecture***
-+-------------------+      +-------------------+      +-------------------+
-|                   |      |                   |      |                   |
-|  User Interaction |----->|  Event Emitter    |<-----|  I/O Completion   |
-|  (e.g., HTTP Req, |      |  (e.g., http, fs, |      |  (e.g., DB result,|
-|  File Read, Timer)|      |  Custom Emitter)  |      |  File read done)  |
-|                   |      |                   |      |                   |
-+-------------------+      +-------------------+      +-------------------+
-         |                          |                            ^
-         |  (Emits Event)           |                            |
-         V                          V                            |
-+--------------------------------------------------------------------+
-|                                                                    |
-|                        Node.js Event Loop                          |
-|                                                                    |
-|  - Continuously monitors the Event Queue                           |
-|  - Dispatches events to their registered Listeners/Callbacks       |
-|  - Offloads I/O operations to underlying system (non-blocking)     |
-|                                                                    |
-+--------------------------------------------------------------------+
-         |                          ^
-         |  (Puts Callback/Event)   |
-         V                          |
-+-------------------+      +-------------------+
-|                   |      |                   |
-|   Event Queue     |----->|  Event Listener   |
-|  (Callbacks ready |      |  (Callback Function)|
-|   for execution)  |      |                   |
-|                   |      |                   |
-+-------------------+      +-------------------+
+![Event driven architecture diagaram](./images/event-driven-architecture.png)
 
 ***Explanation of the Diagram:***
 
