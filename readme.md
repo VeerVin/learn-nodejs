@@ -65,7 +65,7 @@ The fs module is a core module in Node.js and does not require installation. It 
 
 Here is how to read and write files in Node.js using the fs (file system) module:
 
-Reading Files:
+**Reading Files:**
 
 ```javascript
 const fs = require('fs');
@@ -88,7 +88,7 @@ try {
 }
 ```
 
-Writing Files:
+**Writing Files:**
 
 ```javascript
 const fs = require('fs');
@@ -112,7 +112,7 @@ try {
 }
 ```
 
-Appending to Files:
+**Appending to Files:**
 
 ```javascript
 const fs = require('fs');
@@ -140,15 +140,15 @@ try {
 Node.js, designed for scalability and high performance, operates on a single-threaded, non-blocking, and asynchronous architecture. This approach allows it to handle multiple concurrent requests efficiently. 
 Blocking vs. Non-blocking 
 
-• Blocking: A blocking operation halts the execution of other code until it completes. In synchronous operations, the program executes line by line, and if one line takes a long time, it blocks the execution of subsequent lines. 
-• Non-blocking: A non-blocking operation allows the program to continue executing other tasks while waiting for the operation to complete. Node.js leverages asynchronous, non-blocking I/O operations to prevent blocking the main thread. 
+- Blocking: A blocking operation halts the execution of other code until it completes. In synchronous operations, the program executes line by line, and if one line takes a long time, it blocks the execution of subsequent lines. 
+- Non-blocking: A non-blocking operation allows the program to continue executing other tasks while waiting for the operation to complete. Node.js leverages asynchronous, non-blocking I/O operations to prevent blocking the main thread. 
 
-Asynchronous Nature 
+**Asynchronous Nature**
 
-• Node.js is inherently asynchronous, meaning it doesn't wait for I/O operations (like reading from a file or a network request) to finish before moving on to other tasks. Instead, it uses callbacks, promises, or async/await to handle the results of these operations when they are complete. 
-• This approach allows Node.js to handle many concurrent connections efficiently, making it suitable for building high-performance applications. When a long-running operation is initiated, Node.js registers a callback function and continues executing other code. Once the operation completes, the callback is executed, handling the result. [1]  
+- Node.js is inherently asynchronous, meaning it doesn't wait for I/O operations (like reading from a file or a network request) to finish before moving on to other tasks. Instead, it uses callbacks, promises, or async/await to handle the results of these operations when they are complete. 
+- This approach allows Node.js to handle many concurrent connections efficiently, making it suitable for building high-performance applications. When a long-running operation is initiated, Node.js registers a callback function and continues executing other code. Once the operation completes, the callback is executed, handling the result.
 
-Example:
+**Example:**
 
 ```javascript
 const fs = require('fs');
