@@ -187,7 +187,7 @@ This approach allows Node.js to handle multiple requests concurrently, making it
 
 Node.js is renowned for its non-blocking, asynchronous nature, which is primarily facilitated by its event-driven architecture. This paradigm allows Node.js applications to handle a large number of concurrent connections efficiently without creating a new thread for each connection, unlike traditional multi-threaded servers.
 
-***Core Concepts***
+**Core Concepts**
 At its heart, the event-driven architecture in Node.js revolves around a few key components:
 
 - Events: These are actions or occurrences that happen in the system, such as a user clicking a button, data arriving from a network request, a file being read, or a timer expiring.
@@ -200,7 +200,7 @@ At its heart, the event-driven architecture in Node.js revolves around a few key
 
 - Non-blocking I/O: When Node.js performs an I/O operation (like reading a file or making a network request), it doesn't wait for the operation to complete. Instead, it sends the request and immediately continues processing other code. Once the I/O operation finishes, it emits an event, and a callback function (the event listener) is put into the event queue to be processed by the event loop.
 
-***How it Works (The Flow)***
+**How it Works (The Flow)**
 Imagine a server handling incoming web requests:
 
 - Request Arrives: An incoming HTTP request (an "event") arrives at the Node.js server.
@@ -219,10 +219,11 @@ Imagine a server handling incoming web requests:
 
 This continuous cycle allows Node.js to handle many operations concurrently without blocking the main thread.
 
-***Diagram of Node.js Event-Driven Architecture***
+**Diagram of Node.js Event-Driven Architecture:**
+
 ![Event driven architecture diagaram](./images/event-driven-architecture.png)
 
-***Explanation of the Diagram:***
+**Explanation of the Diagram:**
 
 - User Interaction / External Input: Represents anything that triggers an event (e.g., a new HTTP request, a user clicking a button in a client-side app that interacts with Node.js, a file operation starting).
 
@@ -236,7 +237,7 @@ This continuous cycle allows Node.js to handle many operations concurrently with
 
 - Event Listener (Callback Function): The actual code that gets executed when the Event Loop processes an event from the queue.
 
-***Benefits of Event-Driven Architecture in Node.js***
+**Benefits of Event-Driven Architecture in Node.js**
 - Scalability: Can handle a large number of concurrent connections with minimal overhead, making it ideal for real-time applications, APIs, and microservices.
 
 - Performance: Non-blocking I/O ensures that the server doesn't sit idle waiting for slow operations, maximizing CPU utilization.
@@ -247,4 +248,88 @@ This continuous cycle allows Node.js to handle many operations concurrently with
 
 In essence, Node.js's event-driven architecture is what enables it to be so efficient and performant for I/O-bound applications.
 
+## Reading and Writing files Asynchronously
 
+**Callback example**
+
+Here is an example of reading from two files and writing to a third file using nested callbacks in Node.js:
+
+```javascript
+const fs = require('fs');
+
+fs.readFile('file1.txt', 'utf8', (err, data1) => {
+  if (err) return console.error("Error reading file1:", err); ;
+
+  fs.readFile('file2.txt', 'utf8', (err, data2) => {
+    if (err) return console.error("Error reading file2:", err);
+
+    const combinedData = data1 + '\n' + data2;
+
+    fs.writeFile('file3.txt', combinedData, err => {
+      if (err) return console.error("Error reading file3:", err);
+      console.log("Data from file1 and file2 written to file3 successfully.");
+    });
+  });
+});
+```
+**Asyn/Await example:**
+
+```javascript
+// Import the promises API from the 'fs' module for async/await support
+const fs = require('fs').promises;
+
+/**
+ * Reads data from two files, combines them, and writes the combined data to a third file.
+ * This function uses async/await for a cleaner, more sequential asynchronous flow.
+ */
+async function processFiles() {
+  let data1;
+  let data2;
+
+  try {
+    // Read file1.txt asynchronously
+    console.log("Attempting to read file1.txt...");
+    data1 = await fs.readFile('file1.txt', 'utf8');
+    console.log("Successfully read file1.txt.");
+
+    // Read file2.txt asynchronously
+    console.log("Attempting to read file2.txt...");
+    data2 = await fs.readFile('file2.txt', 'utf8');
+    console.log("Successfully read file2.txt.");
+
+    // Combine the data from both files
+    const combinedData = data1 + '\n' + data2;
+    console.log("Combined data from file1.txt and file2.txt.");
+
+    // Write the combined data to file3.txt asynchronously
+    console.log("Attempting to write combined data to file3.txt...");
+    await fs.writeFile('file3.txt', combinedData);
+    console.log("Data from file1 and file2 written to file3.txt successfully.");
+
+  } catch (err) {
+    // Catch any errors that occur during file operations
+    console.error("An error occurred during file processing:", err);
+  }
+}
+
+// Call the async function to start the file processing
+processFiles();
+
+// To make this code runnable, you would need to create dummy files:
+// 1. Create a file named 'file1.txt' in the same directory as this script.
+//    Add some text to it, e.g., "Hello from file1!"
+// 2. Create a file named 'file2.txt' in the same directory.
+//    Add some text to it, e.g., "Greetings from file2!"
+//
+// After running the script:
+// A new file named 'file3.txt' will be created with the combined content.
+```
+
+**In this code:**
+
+- fs.readFile is used to read the contents of file1.txt and file2.txt asynchronously.
+- In the first example, nested within the first readFile callback, the second readFile is called to ensure file1.txt is read first.
+- In the second example we are using asyn and wait to avoide callback hell.
+- The contents of both files are concatenated and stored in the combinedData variable.
+- fs.writeFile is then used to write the combined data to file3.txt.
+- Error handling is included for each file system operation to manage potential issues during file reading or writing.
