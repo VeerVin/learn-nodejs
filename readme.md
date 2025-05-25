@@ -528,4 +528,178 @@ This ability to understand the module structure statically unlocks several power
 In summary, the static nature of ES Module import/export statements transforms module management from a runtime concern into a compile-time optimization opportunity. This fundamental shift empowers modern JavaScript tooling to build smaller, faster, and more robust applications.
 
 ## How to create a webserver?
+
+Creating a server in Node.js is a fundamental skill for building web applications and APIs. Node.js comes with a built-in http module that allows you to do this directly. For more complex applications, frameworks like Express.js are commonly used to simplify server creation and management.
+
+Let's explore both methods:
+
+### 1. Creating a Basic HTTP Server using the Built-in http Module
+
+This is the most direct way to create a server in Node.js. To understanding the low-level mechanics.
+
+- Require the ***http*** module: This module provides the functionality to create an HTTP server.
+
+- Create a server instance: Use ***http.createServer()*** to create the server. This function takes a callback function as an argument, which will be executed every time a request is made to the server.
+  - The callback function receives two arguments: ***req*** (the request object) and ***res*** (the response object).
+
+- Listen for incoming connections: Use ***server.listen()*** to start the server and make it listen for requests on a specific port and optionally an IP address.
+
+**Code Example (server.js):**
+
+```javascript
+// 1. Require the built-in 'http' module
+const http = require('http');
+
+// Define the port the server will listen on
+const PORT = 3000;
+const HOST = '127.0.0.1'; // Loopback address, means it's only accessible from your machine
+
+// 2. Create a server instance
+// The callback function is executed for every incoming request
+const server = http.createServer((req, res) => {
+  // 3. Handle incoming requests
+  console.log(`Request received for: ${req.url} with method: ${req.method}`);
+
+  // Set the HTTP header for a successful response (Status 200 OK, Content-Type as plain text)
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+
+  // Send the response body
+  if (req.url === '/') {
+    res.end('Hello from the Node.js HTTP Server!\n');
+  } else if (req.url === '/about') {
+    res.end('This is the About Page.\n');
+  } else {
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('404 Not Found\n');
+  }
+});
+
+// 4. Listen for incoming connections
+server.listen(PORT, HOST, () => {
+  console.log(`Server running at http://${HOST}:${PORT}/`);
+  console.log('Open your browser and go to:');
+  console.log(`- http://${HOST}:${PORT}/`);
+  console.log(`- http://${HOST}:${PORT}/about`);
+  console.log(`- http://${HOST}:${PORT}/some-other-path`);
+});
+
+// Optional: Handle server errors (e.g., port already in use)
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use.`);
+  } else {
+    console.error('Server error:', error.message);
+  }
+});
+```
+
+**How to Run It:**
+
+- Save the code above as server.js (or any other .js filename).
+Open your terminal or command prompt.
+- Navigate to the directory where you saved server.js.
+- Run the server using Node.js:
+
+```bash
+node server.js
+```
+
+**Testing It:**
+
+- Open your web browser and go to http://127.0.0.1:3000/. You should see "Hello from the Node.js HTTP Server!".
+- Go to http://127.0.0.1:3000/about. You should see "This is the About Page."
+- Go to any other path, like http://127.0.0.1:3000/test. You should see "404 Not Found".
+
+### Creating a Server using Express.js (Recommended for Real-World Apps)
+
+While the http module is powerful, handling routing, middleware, body parsing, and other common web tasks directly with it can become cumbersome for larger applications. This is where web frameworks like Express.js come in. Express is a minimalist, fast, and unopinionated web framework for Node.js.
+
+- Initialize a Node.js project:
+
+```bash
+mkdir my-express-app
+cd my-express-app
+npm init -y
+```
+
+- Install Express:
+
+```bash
+npm install express
+```
+
+- Define routes: Express makes routing (handling different URLs and HTTP methods) much easier using methods like app.get(), app.post(), etc.
+
+**Code Example (app.js in your my-express-app directory):**
+
+```javascript
+// 1. Require the Express framework
+const express = require('express');
+
+// Define the port
+const PORT = 3000;
+
+// 2. Create an Express application instance
+const app = express();
+
+// Middleware: Express comes with built-in middleware.
+// app.use(express.json()); // For parsing JSON request bodies
+// app.use(express.urlencoded({ extended: true })); // For parsing URL-encoded request bodies
+
+// 3. Define routes (HTTP GET requests)
+// Home page route
+app.get('/', (req, res) => {
+  res.send('<h1>Hello from Express!</h1><p>This is the home page.</p>');
+});
+
+// About page route
+app.get('/about', (req, res) => {
+  res.send('<h2>About Us</h2><p>We are learning Node.js and Express!</p>');
+});
+
+// Route with a URL parameter
+app.get('/users/:name', (req, res) => {
+  const userName = req.params.name;
+  res.send(`Hello, ${userName}! Welcome to your profile.`);
+});
+
+// Catch-all for undefined routes (404 Not Found) - MUST be last
+app.use((req, res) => {
+  res.status(404).send('<h1>404 Not Found</h1><p>The page you requested does not exist.</p>');
+});
+
+// 4. Start the server and listen for connections
+app.listen(PORT, () => {
+  console.log(`Express server running on http://localhost:${PORT}`);
+  console.log('Open your browser and go to:');
+  console.log(`- http://localhost:${PORT}/`);
+  console.log(`- http://localhost:${PORT}/about`);
+  console.log(`- http://localhost:${PORT}/users/Alice`);
+});
+```
+
+**How to Run It:**
+
+- Open your terminal
+- Run the server by running below command:
+```bash
+node app.js
+```
+- You should see the putput indicating the server is running.
+
+**Testing it**
+
+- Open your web browser and go to http://localhost:3000/.
+- Go to http://localhost:3000/about.
+- Go to http://localhost:3000/users/Bob.
+
+**Key Differences & Why Express is Preferred:**
+
+- **Routing**: Express provides clear, concise methods (***app.get***, ***app.post***, etc.) for handling different HTTP methods and URL patterns, including parameters. The raw ***http*** module requires manual parsing of ***req.url***.
+- **Middleware**: Express has a robust middleware system, allowing you to easily add functionalities like body parsing (***express.json()***), logging, authentication, compression, etc., for all or specific routes. The ***http*** module requires you to implement these manually in your ***createServer*** callback.
+- **Error Handling**: Express offers more streamlined error handling mechanisms.
+- **Community & Ecosystem**: Express has a vast community and a rich ecosystem of third-party middleware and tools.
+
+For most real-world web applications, using a framework like Express.js is highly recommended because it abstracts away much of the repetitive boilerplate code and provides a structured way to build robust applications.
+
 ## What is Routing?
