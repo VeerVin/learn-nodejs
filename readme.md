@@ -763,7 +763,7 @@ CRUD is an acronym that represents the four fundamental operations that can be p
   - **RESTful Mapping**: Typically handled by an HTTP DELETE request to a specific resource URI.
     - Example: ***DELETE /users/123***
 
-## The Relationship Between REST API and CRUD:
+### The Relationship Between REST API and CRUD:
 
 - REST is an architectural style for designing web services.
 - CRUD operations are the fundamental actions you perform on data.
