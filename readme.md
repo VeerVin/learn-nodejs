@@ -577,10 +577,6 @@ const server = http.createServer((req, res) => {
 // 4. Listen for incoming connections
 server.listen(PORT, HOST, () => {
   console.log(`Server running at http://${HOST}:${PORT}/`);
-  console.log('Open your browser and go to:');
-  console.log(`- http://${HOST}:${PORT}/`);
-  console.log(`- http://${HOST}:${PORT}/about`);
-  console.log(`- http://${HOST}:${PORT}/some-other-path`);
 });
 
 // Optional: Handle server errors (e.g., port already in use)
@@ -703,3 +699,80 @@ node app.js
 For most real-world web applications, using a framework like Express.js is highly recommended because it abstracts away much of the repetitive boilerplate code and provides a structured way to build robust applications.
 
 ## What is Routing?
+
+Before understanding Routing lets understand REST API and CRUD opperations.
+
+### REST API (Representational State Transfer Application Programming Interface)
+
+**What is it?**
+
+REST is not a protocol or a strict standard; instead, it's an architectural style for designing networked applications. It defines a set of constraints for how a web service should be structured to allow for loose coupling, scalability, and statelessness. When a service adheres to these constraints, it's said to be "RESTful."
+
+**Core Idea:**
+
+The central concept of REST is the resource. Everything is treated as a resource (e.g., a user, a product, an order). These resources are identified by unique URIs (Uniform Resource Identifiers), typically URLs. Clients interact with these resources by sending requests to their URIs, and the server responds with a "representation" of that resource (e.g., a JSON object, XML, HTML).
+
+- There's a strict separation between the client (e.g., a web browser, mobile app) and the server.
+- This separation allows each to evolve independently, improving portability and scalability.
+- Each request from a client to the server must contain all the information needed to understand the request.
+- Responses from the server must explicitly or implicitly define themselves as cacheable or non-cacheable.
+- If a response is cacheable, the client or an intermediary cache can reuse that response for equivalent subsequent requests, reducing server load and networ
+- Uniform Interface (Most Important for Practical Understanding): This is the core constraint that simplifies the overall system architecture and makes it RESTful. It means that there's a standardized way to interact with resources, regardless of their implementation details.
+  - **Resource Identification in Requests**: Individual resources are identified in requests, usually using URIs (e.g., /users, /products/123).
+  - **Resource Manipulation through Representations**: Clients interact with resources by exchanging representations of those resources (e.g., sending a JSON object to create a new user, receiving a JSON object representing a product).
+  - **Self-Descriptive Messages**: Each message exchanged between client and server should contain enough information to describe how to process the message. For example, HTTP headers (like Content-Type) indicate the format of the message body.
+
+  **How REST uses HTTP:**
+
+  RESTful APIs leverage standard HTTP methods (verbs) to perform operations on resources (nouns identified by URIs).
+
+| HTTP Method | Rest Operation | Description |
+| ------------- | ------------- | ------------ |
+| `GET`  | Read/Retrive  | Fetch a resource or a collection of resources |
+| `POST`  | Create  | Submit data to create a new resource |
+| `PUT`  | Update/Replace | Update/replace an existing resource with the provided data |
+| `PATCH`  | Partial Update | Apply partial modifications to a resource |
+| `DELET`  | Delete | Remove a specific resource |
+
+### CRUD Operations (Create, Read, Update, Delete)
+
+CRUD is an acronym that represents the four fundamental operations that can be performed on data in persistent storage (like a database) or on "resources" in an application. These operations are the cornerstone of almost any data-driven application.
+
+- C - Create (or Add):
+  - **Purpose**: To add new data or a new resource to a system
+  - **Example**: Adding a new user to a database, uploading a new photo
+  - **RESTful Mapping**: Typically handled by an ***HTTP POST*** request to a collection URI
+    - **Example**: ***POST /users*** with a request body containing new user data
+- R - Read (or Retrieve/Fetch):
+  - **Purpose**: To fetch or retrieve existing data or resources from the system.
+  - **Example**: Displaying a list of all users, fetching details of a specific product.
+  - **RESTful Mapping**: Typically handled by an ***HTTP GET*** request.
+    - Example (all): ***GET /users***
+    - Example (specific): ***GET /users/123***
+- U - Update (or Modify):
+  - **Purpose**: To modify or change existing data or resources.
+  - **Example**: Changing a user's email address, updating a product's price.
+  - **RESTful Mapping**:
+    - ***HTTP PUT***: Used to completely replace a resource with new data. The client sends the entire updated resource. (Idempotent: sending the same PUT request multiple times has the same effect as sending it once)
+      - Example: ***PUT /users/123*** with a request body containing the full updated user data for user 123.
+    - ***HTTP PATCH***: Used to apply partial modifications to a resource. The client sends only the fields that need to be changed.
+      - Example: ***PATCH /users/123*** with a request body containing just { "email": "new@example.com" }.
+- D - Delete (or Destroy/Remove):
+  - **Purpose**: To remove or delete existing data or resources from the system.
+  - **Example**: Removing a user account, deleting a product from inventor
+  - **RESTful Mapping**: Typically handled by an HTTP DELETE request to a specific resource URI.
+    - Example: ***DELETE /users/123***
+
+## The Relationship Between REST API and CRUD:
+
+- REST is an architectural style for designing web services.
+- CRUD operations are the fundamental actions you perform on data.
+
+The brilliance of REST, particularly when applied using HTTP, is that it provides a uniform and intuitive way to map CRUD operations to standard HTTP methods and resource URLs.
+
+When you build a RESTful API, you're essentially creating endpoints that allow clients to perform CRUD operations on your server's resources.
+
+- You design your URIs (e.g., /users, /products) to represent your resources
+- You use HTTP methods (e.g., GET, POST, PUT, DELETE) to represent the CRUD operations (the verbs) you want to perform on those resources.
+
+
